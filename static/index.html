@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>DevOps AI Copilot</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+            border-top: 3px solid #6b46c1;
+        }
+
+
+        .container {
+            max-width: 1000px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+
+        /* HEADER */
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+
+        .header h1 {
+            margin-bottom: 8px;
+            font-size: 28px;
+        }
+
+
+        .header p {
+            color: #64748b;
+            margin: 0;
+            font-size: 14px;
+        }
+
+
+        /* INPUT CARD */
+
+        .input-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 15px;
+        }
+
+
+        label {
+            display: block;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+
+        textarea {
+            width: 100%;
+            min-height: 130px;
+            padding: 14px;
+            font-size: 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            resize: vertical;
+            font-family: Consolas, monospace;
+        }
+
+
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+
+        /* BUTTONS */
+
+        .button-group {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+
+        button {
+            border: none;
+            color: white;
+            padding: 10px 16px;
+            font-size: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+
+        #analyzeBtn {
+            background: #2563eb;
+        }
+
+
+        #newAnalysisBtn {
+            background: #64748b;
+        }
+
+
+        #historyBtn {
+            background: #6d3dc2;
+        }
+
+
+        .view-btn {
+            background: #2563eb;
+            padding: 8px 13px;
+            font-size: 12px;
+        }
+
+
+        .delete-btn {
+            background: #dc2626;
+            padding: 8px 13px;
+            font-size: 12px;
+        }
+
+
+        .clear-btn {
+            background: #dc2626;
+        }
+
+
+        /* LOADING */
+
+        .hidden {
+            display: none !important;
+        }
+
+
+        .loading {
+            margin-top: 20px;
+            padding: 16px;
+            background: #e8f0ff;
+            border-left: 4px solid #2563eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+
+        .spinner {
+            width: 22px;
+            height: 22px;
+            border: 3px solid #cbd5e1;
+            border-top: 3px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+
+        @keyframes spin {
+
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+
+        }
+
+
+        /* ERROR */
+
+        .error {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 14px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+
+        /* DASHBOARD */
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+
+        .stat-card {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+        }
+
+
+        .stat-card p {
+            margin: 0 0 10px 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+
+        .stat-card h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+
+        .total-stat {
+            border-left: 3px solid #2563eb;
+        }
+
+
+        .high-stat {
+            border-left: 3px solid #dc2626;
+        }
+
+
+        .medium-stat {
+            border-left: 3px solid #d97706;
+        }
+
+
+        .low-stat {
+            border-left: 3px solid #16a34a;
+        }
+
+
+        /* HISTORY */
+
+        .history-section {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 15px;
+        }
+
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 14px;
+        }
+
+
+        .history-header h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+
+        .history-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+
+        #searchHistory {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+
+        #dateFilter {
+            width: 200px;
+            padding: 12px;
+            border: 1px solid #2563eb;
+            border-radius: 7px;
+            background: white;
+        }
+
+
+        .history-count {
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+
+        .history-item {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 10px;
+        }
+
+
+        .history-issue {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+
+        .history-date {
+            font-size: 11px;
+            color: #64748b;
+            margin: 8px 0;
+        }
+
+
+        .history-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+
+        /* SEVERITY */
+
+        .severity-badge {
+            display: inline-block;
+            padding: 5px 11px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+
+        .severity-high {
+            background: #fff0e6;
+            color: #c2410c;
+            border: 1px solid #fb923c;
+        }
+
+
+        .severity-medium {
+            background: #fffbeb;
+            color: #a16207;
+            border: 1px solid #facc15;
+        }
+
+
+        .severity-low {
+            background: #ecfdf5;
+            color: #15803d;
+            border: 1px solid #86efac;
+        }
+
+
+        /* CURRENT ANALYSIS */
+
+        #results {
+            display: none;
+        }
+
+
+        .analysis-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+
+        .analysis-time {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+
+        .issue-box {
+            background: #dbeafe;
+            border-left: 4px solid #2563eb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+
+        .issue-box strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+
+        .result-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #2563eb;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+
+        .result-card h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 21px;
+        }
+
+
+        .result-card p {
+            line-height: 1.6;
+        }
+
+
+        ul {
+            padding-left: 20px;
+        }
+
+
+        li {
+            line-height: 1.7;
+            margin-bottom: 6px;
+        }
+
+
+        /* COMMANDS */
+
+        .command-box {
+            background: #1f2937;
+            color: #f8fafc;
+            padding: 13px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+
+        .command-box code {
+            font-family: Consolas, monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+
+        .copy-btn {
+            background: #475569;
+            padding: 8px 12px;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+
+        /* MOBILE */
+
+        @media (max-width: 700px) {
+
+            .container {
+                margin: 10px auto;
+                padding: 12px;
+            }
+
+            .dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .history-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .history-controls {
+                flex-direction: column;
+            }
+
+            #dateFilter {
+                width: 100%;
+            }
+
+            .command-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <div class="container">
+
+
+        <!-- HEADER -->
+
+        <div class="header">
+
+            <h1>🚀 DevOps AI Copilot</h1>
+
+            <p>
+                Describe your DevOps problem and get AI-powered
+                troubleshooting guidance.
+            </p>
+
+        </div>
+
+
+        <!-- INPUT -->
+
+        <div class="input-card">
+
+            <label for="issue">
+                Describe your DevOps issue
+            </label>
+
+            <textarea
+                id="issue"
+                placeholder="Example: Kubernetes pod is in CrashLoopBackOff state"
+            ></textarea>
+
+
+            <div class="button-group">
+
+                <button
+                    id="analyzeBtn"
+                    onclick="analyzeIssue()"
+                >
+                    Analyze Issue
+                </button>
+
+
+                <button
+                    id="newAnalysisBtn"
+                    onclick="newAnalysis()"
+                >
+                    New Analysis
+                </button>
+
+
+                <button
+                    id="historyBtn"
+                    onclick="loadHistory()"
+                >
+                    📜 View History
+                </button>
+
+            </div>
+
+
+            <div
+                id="loading"
+                class="loading hidden"
+            >
+
+                <div class="spinner"></div>
+
+                <span>
+                    Analyzing your DevOps issue with AI...
+                </span>
+
+            </div>
+
+
+            <div id="errorMessage"></div>
+
+        </div>
+
+
+        <!-- DASHBOARD -->
+
+        <div class="dashboard">
+
+            <div class="stat-card total-stat">
+
+                <p>📊 Total Analyses</p>
+
+                <h2 id="totalCount">0</h2>
+
+            </div>
+
+
+            <div class="stat-card high-stat">
+
+                <p>🔴 High Severity</p>
+
+                <h2 id="highCount">0</h2>
+
+            </div>
+
+
+            <div class="stat-card medium-stat">
+
+                <p>🟡 Medium Severity</p>
+
+                <h2 id="mediumCount">0</h2>
+
+            </div>
+
+
+            <div class="stat-card low-stat">
+
+                <p>🟢 Low Severity</p>
+
+                <h2 id="lowCount">0</h2>
+
+            </div>
+
+        </div>
+
+
+        <!-- HISTORY -->
+
+        <div class="history-section">
+
+            <div class="history-header">
+
+                <h2>📜 Analysis History</h2>
+
+
+                <button
+                    class="clear-btn"
+                    onclick="clearAllHistory()"
+                >
+                    🗑 Clear All History
+                </button>
+
+            </div>
+
+
+            <div class="history-controls">
+
+                <input
+                    type="text"
+                    id="searchHistory"
+                    placeholder="🔍 Search history..."
+                    oninput="filterHistory()"
+                >
+
+
+                <select
+                    id="dateFilter"
+                    onchange="filterHistory()"
+                >
+
+                    <option value="today">
+                        Today
+                    </option>
+
+                    <option value="7">
+                        Last 7 Days
+                    </option>
+
+                    <option value="30">
+                        Last 30 Days
+                    </option>
+
+                    <option value="all">
+                        All Time
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div
+                id="historyCount"
+                class="history-count"
+            >
+                0 analysis record(s)
+            </div>
+
+
+            <div id="historyList">
+
+                No history found.
+
+            </div>
+
+        </div>
+
+
+        <!-- RESULTS -->
+
+        <div id="results">
+
+
+            <!-- NEW SEVERITY AND TIME SECTION -->
+
+            <div class="analysis-meta">
+
+                <div
+                    id="currentSeverity"
+                    class="severity-badge severity-low"
+                >
+                    🟢 Low Severity
+                </div>
+
+
+                <div
+                    id="analysisTime"
+                    class="analysis-time"
+                >
+                </div>
+
+            </div>
+
+
+            <div class="issue-box">
+
+                <strong>
+                    📥 Issue Received
+                </strong>
+
+                <span id="issueReceived"></span>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h2>
+                    🔍 Probable Cause
+                </h2>
+
+                <p id="probableCause"></p>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h2>
+                    ✅ What to Check
+                </h2>
+
+                <ul id="whatToCheck"></ul>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h2>
+                    💻 Commands
+                </h2>
+
+                <div id="commands"></div>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <h2>
+                    🛠️ Recommended Fix
+                </h2>
+
+                <ul id="recommendedFix"></ul>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <script>
+
+        let allHistory = [];
+
+
+        async function analyzeIssue() {
+
+    const issueInput =
+        document.getElementById("issue");
+
+    const analyzeBtn =
+        document.getElementById("analyzeBtn");
+
+    const loading =
+        document.getElementById("loading");
+
+    const errorMessage =
+        document.getElementById("errorMessage");
+
+
+    const issue =
+        issueInput.value.trim();
+
+
+    // Validation: empty input
+    if (!issue) {
+
+        errorMessage.innerHTML = `
+            <div class="error">
+                Please describe your DevOps issue
+                before analyzing.
+            </div>
+        `;
+
+        issueInput.focus();
+
+        return;
+    }
+
+
+    // Validation: issue is too short
+    if (issue.length < 15) {
+
+        errorMessage.innerHTML = `
+            <div class="error">
+                Please provide more details about the
+                DevOps issue. Enter at least 15 characters.
+            </div>
+        `;
+
+        issueInput.focus();
+
+        return;
+    }
+
+
+    // Validation: issue is too long
+    if (issue.length > 1000) {
+
+        errorMessage.innerHTML = `
+            <div class="error">
+                The DevOps issue is too long.
+                Please keep it within 1000 characters.
+            </div>
+        `;
+
+        issueInput.focus();
+
+        return;
+    }
+
+
+    errorMessage.innerHTML = "";
+
+
+    analyzeBtn.disabled = true;
+
+    analyzeBtn.textContent =
+        "Analyzing...";
+
+
+    loading.classList.remove("hidden");
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/v1/analyze",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        issue: issue
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Failed to analyze the DevOps issue."
+            );
+        }
+
+
+        displayAnalysis(data);
+
+
+        await loadHistory();
+
+
+    } catch (error) {
+
+        errorMessage.innerHTML = `
+            <div class="error">
+                Error: ${error.message}
+            </div>
+        `;
+
+    } finally {
+
+        loading.classList.add("hidden");
+
+
+        analyzeBtn.disabled = false;
+
+        analyzeBtn.textContent =
+            "Analyze Issue";
+    }
+}
+
+
+        function displayAnalysis(data) {
+
+            const results =
+                document.getElementById("results");
+
+
+            const analysis =
+                data.analysis;
+
+
+            document.getElementById(
+                "issueReceived"
+            ).textContent =
+                data.issue_received;
+
+
+            document.getElementById(
+                "probableCause"
+            ).textContent =
+                analysis.probable_cause;
+
+
+            // What to check
+
+            const whatToCheck =
+                document.getElementById(
+                    "whatToCheck"
+                );
+
+
+            whatToCheck.innerHTML = "";
+
+
+            analysis.what_to_check.forEach(item => {
+
+                const li =
+                    document.createElement("li");
+
+                li.textContent = item;
+
+                whatToCheck.appendChild(li);
+
+            });
+
+
+            // Commands
+
+            const commands =
+                document.getElementById("commands");
+
+
+            commands.innerHTML = "";
+
+
+            analysis.commands.forEach(command => {
+
+                const commandBox =
+                    document.createElement("div");
+
+                commandBox.className =
+                    "command-box";
+
+
+                const code =
+                    document.createElement("code");
+
+                code.textContent =
+                    command;
+
+
+                const copyButton =
+                    document.createElement("button");
+
+                copyButton.className =
+                    "copy-btn";
+
+                copyButton.textContent =
+                    "📋 Copy";
+
+
+                copyButton.onclick =
+                    function () {
+
+                        navigator.clipboard
+                            .writeText(command);
+
+                        copyButton.textContent =
+                            "Copied ✓";
+
+
+                        setTimeout(() => {
+
+                            copyButton.textContent =
+                                "📋 Copy";
+
+                        }, 1500);
+
+                    };
+
+
+                commandBox.appendChild(code);
+
+                commandBox.appendChild(
+                    copyButton
+                );
+
+
+                commands.appendChild(
+                    commandBox
+                );
+
+            });
+
+
+            // Recommended fix
+
+            const recommendedFix =
+                document.getElementById(
+                    "recommendedFix"
+                );
+
+
+            recommendedFix.innerHTML = "";
+
+
+            analysis.recommended_fix.forEach(item => {
+
+                const li =
+                    document.createElement("li");
+
+                li.textContent = item;
+
+                recommendedFix.appendChild(li);
+
+            });
+
+
+            // Show severity returned by backend
+
+            const severity =
+                analysis.severity;
+
+
+            displayCurrentSeverity(
+                severity
+            );
+
+
+            // NEW:
+            // Show current analysis time
+
+            const now =
+                new Date();
+
+
+            document.getElementById(
+                "analysisTime"
+            ).textContent =
+                "🕒 Analyzed: " +
+                now.toLocaleString();
+
+
+            results.style.display =
+                "block";
+
+
+            results.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }
+
+
+
+        function displayCurrentSeverity(
+            severity
+        ) {
+
+            const severityElement =
+                document.getElementById(
+                    "currentSeverity"
+                );
+
+
+            severityElement.className =
+                "severity-badge";
+
+
+            if (severity === "High") {
+
+                severityElement.classList.add(
+                    "severity-high"
+                );
+
+                severityElement.textContent =
+                    "🔴 High Severity";
+
+            }
+
+            else if (
+                severity === "Medium"
+            ) {
+
+                severityElement.classList.add(
+                    "severity-medium"
+                );
+
+                severityElement.textContent =
+                    "🟡 Medium Severity";
+
+            }
+
+            else {
+
+                severityElement.classList.add(
+                    "severity-low"
+                );
+
+                severityElement.textContent =
+                    "🟢 Low Severity";
+
+            }
+
+        }
+
+
+        async function loadHistory() {
+
+    const historyList =
+        document.getElementById(
+            "historyList"
+        );
+
+
+    try {
+
+        const response =
+            await fetch("/api/v1/history");
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Failed to load history."
+            );
+
+        }
+
+
+        allHistory = data;
+
+
+        filterHistory();
+
+
+        // Load dashboard statistics
+        await loadStats();
+
+    }
+
+    catch (error) {
+
+        historyList.innerHTML = `
+            <div class="error">
+                Error loading history:
+                ${error.message}
+            </div>
+        `;
+
+    }
+
+}
+
+
+        function filterHistory() {
+
+            const searchValue =
+                document.getElementById(
+                    "searchHistory"
+                )
+                .value
+                .toLowerCase()
+                .trim();
+
+
+            const dateFilter =
+                document.getElementById(
+                    "dateFilter"
+                ).value;
+
+
+            const now =
+                new Date();
+
+
+            const filteredHistory =
+                allHistory.filter(item => {
+
+                    const matchesSearch =
+                        item.issue
+                            .toLowerCase()
+                            .includes(
+                                searchValue
+                            );
+
+
+                    const itemDate =
+                        new Date(
+                            item.created_at
+                        );
+
+
+                    let matchesDate =
+                        true;
+
+
+                    if (
+                        dateFilter === "today"
+                    ) {
+
+                        matchesDate =
+                            itemDate.getFullYear()
+                            === now.getFullYear()
+                            &&
+                            itemDate.getMonth()
+                            === now.getMonth()
+                            &&
+                            itemDate.getDate()
+                            === now.getDate();
+
+                    }
+
+
+                    else if (
+                        dateFilter !== "all"
+                    ) {
+
+                        const days =
+                            parseInt(
+                                dateFilter
+                            );
+
+
+                        const startDate =
+                            new Date();
+
+
+                        startDate.setDate(
+                            now.getDate() - days
+                        );
+
+
+                        matchesDate =
+                            itemDate >= startDate;
+
+                    }
+
+
+                    return (
+                        matchesSearch &&
+                        matchesDate
+                    );
+
+                });
+
+
+            renderHistory(
+                filteredHistory
+            );
+
+
+            updateHistoryCount(
+                filteredHistory.length
+            );
+
+
+        
+
+        }
+
+
+        function renderHistory(history) {
+
+            const historyList =
+                document.getElementById(
+                    "historyList"
+                );
+
+
+            historyList.innerHTML = "";
+
+
+            if (history.length === 0) {
+
+                historyList.innerHTML =
+                    "No matching history found.";
+
+                return;
+
+            }
+
+
+            history.forEach((item, index) => {
+
+                const severity =
+                    item.severity;
+
+
+                let severityClass =
+                    "severity-low";
+
+
+                let severityText =
+                    "🟢 Low";
+
+
+                if (
+                    severity === "High"
+                ) {
+
+                    severityClass =
+                        "severity-high";
+
+                    severityText =
+                        "🔴 High";
+
+                }
+
+
+                else if (
+                    severity === "Medium"
+                ) {
+
+                    severityClass =
+                        "severity-medium";
+
+                    severityText =
+                        "🟡 Medium";
+
+                }
+
+
+                const itemDiv =
+                    document.createElement("div");
+
+
+                itemDiv.className =
+                    "history-item";
+
+
+                itemDiv.innerHTML = `
+
+                    <div class="history-issue">
+                        Issue ${index + 1}:
+                        ${escapeHtml(item.issue)}
+                    </div>
+
+                    <div
+                        class="severity-badge ${severityClass}"
+                    >
+                        ${severityText}
+                    </div>
+
+                    <div class="history-date">
+                        🕒
+                        ${formatDate(item.created_at)}
+                    </div>
+
+                    <div class="history-actions">
+
+                        <button
+                            class="view-btn"
+                            onclick="viewHistoryItem(${item.id})"
+                        >
+                            View Analysis
+                        </button>
+
+                        <button
+                            class="delete-btn"
+                            onclick="deleteHistoryItem(${item.id})"
+                        >
+                            🗑 Delete
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                historyList.appendChild(
+                    itemDiv
+                );
+
+            });
+
+        }
+
+
+        function updateHistoryCount(count) {
+
+            const filter =
+                document.getElementById(
+                    "dateFilter"
+                );
+
+
+            const filterText =
+                filter.options[
+                    filter.selectedIndex
+                ].text;
+
+
+            document.getElementById(
+                "historyCount"
+            ).textContent =
+                `${count} of ${allHistory.length} analysis record(s) • ${filterText}`;
+
+        }
+
+
+        function updateDashboard(history) {
+
+    let high = 0;
+
+    let medium = 0;
+
+    let low = 0;
+
+
+    history.forEach(item => {
+
+        const severity = (
+            item.severity || "Medium"
+        ).toLowerCase();
+
+
+        if (
+            severity === "high"
+        ) {
+
+            high++;
+
+        }
+
+        else if (
+            severity === "medium"
+        ) {
+
+            medium++;
+
+        }
+
+        else if (
+            severity === "low"
+        ) {
+
+            low++;
+
+        }
+
+    });
+
+
+    document.getElementById(
+        "totalCount"
+    ).textContent =
+        history.length;
+
+
+    document.getElementById(
+        "highCount"
+    ).textContent =
+        high;
+
+
+    document.getElementById(
+        "mediumCount"
+    ).textContent =
+        medium;
+
+
+    document.getElementById(
+        "lowCount"
+    ).textContent =
+        low;
+
+}
+
+        async function viewHistoryItem(
+            historyId
+        ) {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/api/v1/history/${historyId}`
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.detail ||
+                        "Failed to load analysis."
+                    );
+
+                }
+
+
+                displayAnalysis({
+
+                    issue_received:
+                        data.issue,
+
+                    analysis:
+                        data.analysis
+
+                });
+
+
+                // Show original saved time
+
+                document.getElementById(
+                    "analysisTime"
+                ).textContent =
+                    "🕒 Analyzed: " +
+                    formatDate(
+                        data.created_at
+                    );
+
+            }
+
+            catch (error) {
+
+                document.getElementById(
+                    "errorMessage"
+                ).innerHTML = `
+
+                    <div class="error">
+                        Error: ${error.message}
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        async function deleteHistoryItem(
+            historyId
+        ) {
+
+            const confirmed =
+                confirm(
+                    "Delete this analysis from history?"
+                );
+
+
+            if (!confirmed) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/api/v1/history/${historyId}`,
+                        {
+                            method: "DELETE"
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.detail ||
+                        "Failed to delete history item."
+                    );
+
+                }
+
+
+                loadHistory();
+
+            }
+
+            catch (error) {
+
+                alert(
+                    "Error: " +
+                    error.message
+                );
+
+            }
+
+        }
+
+
+        async function clearAllHistory() {
+
+            if (
+                allHistory.length === 0
+            ) {
+
+                alert(
+                    "There is no history to clear."
+                );
+
+                return;
+
+            }
+
+
+            const confirmed =
+                confirm(
+                    "Are you sure you want to permanently delete all analysis history?"
+                );
+
+
+            if (!confirmed) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/v1/history",
+                        {
+                            method: "DELETE"
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.detail ||
+                        "Failed to clear history."
+                    );
+
+                }
+
+
+                loadHistory();
+
+            }
+
+            catch (error) {
+
+                alert(
+                    "Error: " +
+                    error.message
+                );
+
+            }
+
+        }
+
+
+        function newAnalysis() {
+
+            document.getElementById(
+                "issue"
+            ).value = "";
+
+
+            document.getElementById(
+                "errorMessage"
+            ).innerHTML = "";
+
+
+            document.getElementById(
+                "results"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "issue"
+            ).focus();
+
+
+            window.scrollTo({
+
+                top: 0,
+
+                behavior: "smooth"
+
+            });
+
+        }
+
+
+        function formatDate(dateString) {
+
+            const date =
+                new Date(dateString);
+
+
+            return date.toLocaleString();
+
+        }
+
+
+        function escapeHtml(text) {
+
+            const div =
+                document.createElement("div");
+
+
+            div.textContent =
+                text;
+
+
+            return div.innerHTML;
+
+        }
+
+
+        // Ctrl + Enter
+
+        document
+            .getElementById("issue")
+            .addEventListener(
+                "keydown",
+                function(event) {
+
+                    if (
+                        event.ctrlKey &&
+                        event.key === "Enter"
+                    ) {
+
+                        analyzeIssue();
+
+                    }
+
+                }
+            );
+
+        async function loadStats() {
+
+    try {
+
+        const response =
+            await fetch("/api/v1/stats");
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Failed to load statistics."
+            );
+
+        }
+
+
+        document.getElementById(
+            "totalCount"
+        ).textContent =
+            data.total;
+
+
+        document.getElementById(
+            "highCount"
+        ).textContent =
+            data.high;
+
+
+        document.getElementById(
+            "mediumCount"
+        ).textContent =
+            data.medium;
+
+
+        document.getElementById(
+            "lowCount"
+        ).textContent =
+            data.low;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Error loading statistics:",
+            error
+        );
+
+    }
+
+}    
+
+
+        // Load history when page opens
+
+        window.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                loadHistory();
+
+            }
+        );
+
+
+    </script>
+
+</body>
+
+</html>
